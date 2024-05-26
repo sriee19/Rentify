@@ -12,8 +12,14 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Basic form validation
+    if (!formData.email || !formData.password) {
+      alert("Email and Password are required.");
+      return;
+    }
     try {
       const response = await axios.post('http://localhost:5000/api/users/login', formData);
+      localStorage.setItem('token', response.data.token);
       if (response.data.userType === 'buyer') {
         navigate('/buyer');
       } else {

@@ -6,6 +6,7 @@ import SellerDashboard from './components/SellerDashboard';
 import BuyerDashboard from './components/BuyerDashboard';
 import PropertyList from './components/PropertyList';
 import PropertyDetails from './components/PropertyDetails';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   return (
@@ -13,10 +14,10 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/seller" element={<SellerDashboard />} />
-        <Route path="/buyer" element={<BuyerDashboard />} />
-        <Route path="/properties" element={<PropertyList />} />
-        <Route path="/property/:id" element={<PropertyDetails />} />
+        <Route path="/seller" element={<PrivateRoute element={SellerDashboard} />} />
+        <Route path="/buyer" element={<PrivateRoute element={BuyerDashboard} />} />
+        <Route path="/properties" element={<PrivateRoute element={PropertyList} />} />
+        <Route path="/property/:id" element={<PrivateRoute element={PropertyDetails} />} />
       </Routes>
     </Router>
   );

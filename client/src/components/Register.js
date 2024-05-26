@@ -3,15 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    password: '',
-    userType: 'buyer' // or 'seller'
-  });
-
+  const [formData, setFormData] = useState({ email: '', password: '', userType: 'buyer' });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,10 +12,15 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Basic form validation
+    if (!formData.email || !formData.password) {
+      alert("Email and Password are required.");
+      return;
+    }
     try {
       const response = await axios.post('http://localhost:5000/api/users/register', formData);
-      console.log(response.data);
-      navigate('/login'); // Redirect to login after successful registration
+      localStorage.setItem('token', response.data.token);
+      navigate('/login');
     } catch (error) {
       console.error(error);
     }
@@ -31,10 +28,7 @@ function Register() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" />
-      <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" />
       <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
-      <input name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" />
       <input name="password" type="password" value={formData.password} onChange={handleChange} placeholder="Password" />
       <select name="userType" value={formData.userType} onChange={handleChange}>
         <option value="buyer">Buyer</option>

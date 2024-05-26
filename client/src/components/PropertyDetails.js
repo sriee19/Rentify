@@ -1,34 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
-function PropertyDetails({ match }) {
-  const [property, setProperty] = useState(null);
+function PropertyDetails() {
+  const { id } = useParams();
+  const [property, setProperty] = useState({});
 
   useEffect(() => {
     const fetchProperty = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/properties/${match.params.id}`);
+        const response = await axios.get(`http://localhost:5000/api/properties/${id}`);
         setProperty(response.data);
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching property details:', error);
       }
     };
-    fetchProperty();
-  }, [match.params.id]);
 
-  if (!property) {
-    return <div>Loading...</div>;
+    fetchProperty();
+  }, [id]);
+
+  async function handleLike() {
+    try {
+      const response = await axios.post(`http://localhost:5000/api/properties/${id}/like`);
+      setProperty({ ...property, likes: response.data.likes });
+    } catch (error) {
+      console.error('Error liking the property:', error);
+    }
+  }
+
+  async function handleInterest() {
+    try {
+      await axios.post(`http://localhost:5000/api/properties/${id}/interest`, {
+        buyerEmail: localStorage.getItem('email') // Ensure to save the email on login
+      });
+      alert('Seller has been notified. Check your email for seller contact details.');
+    } catch (error) {
+      console.error('Error expressing interest:', error);
+    }
   }
 
   return (
     <div>
-      <h1>{property.place}</h1>
-      <p>Area: {property.area} sq.ft</p>
-      <p>Bedrooms: {property.bedrooms}</p>
-      <p>Bathrooms: {property.bathrooms}</p>
-      <p>Nearby Hospitals: {property.nearbyHospitals.join(', ')}</p>
-      <p>Nearby Colleges: {property.nearbyColleges.join(', ')}</p>
-      <p>Interested Buyers: {property.interestedBuyers.length}</p>
+      <h1>{property.title}</h1>
+      <p>{property.description}</p>
+      <p>Price: ${property.price}</p>
+      <button onClick={handleLike}>Like ({property.likes})</button>
+      <button onClick={handleInterest}>I'm Interested</button>
     </div>
   );
 }
