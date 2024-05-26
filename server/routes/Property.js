@@ -53,14 +53,14 @@ router.post('/:id/interest', auth, async (req, res) => {
     });
 
     await transporter.sendMail({
-      from: 'your-email@gmail.com',
+      from: 'rentify@gmail.com',
       to: buyerEmail,
       subject: 'Property Interest',
       text: `You expressed interest in ${property.title}. Contact the seller at ${seller.email}`,
     });
 
     await transporter.sendMail({
-      from: 'your-email@gmail.com',
+      from: 'rentify@gmail.com',
       to: seller.email,
       subject: 'New Interest in Your Property',
       text: `A buyer has shown interest in your property ${property.title}. Contact them at ${buyerEmail}`,
